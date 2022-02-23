@@ -126,15 +126,13 @@ module.exports = class ShwarmaOrder extends Order{
               aReturn.push("which items would you like?");
               break;
          case OrderState.ITEMS:
-             this.stateCur = OrderState.SIZE;
-             if(this.sitems == "" || this.sitems == undefined){
-              this.sitems = chooseitems(sInput);
-              if(this.sitems == undefined){
-                  aReturn.push("You must choose from menu. Press random key to re-input")
-                  this.stateCur = OrderState.WELCOMING;
-                  break;
-                 }
-             }
+            // ** test
+            this.sitems = chooseitems(sInput);
+            if(this.sitems == undefined){
+              aReturn.push("You must choose from menu.");
+              break;
+            }
+            this.stateCur = OrderState.SIZE;
              console.log(`this.sitems is ${this.sitems}`)
              console.log(`availableSizes is ${availableSizes(this.sitems)}`)
              let askSize = foreachArray("basePriceDict",this.sitems);
@@ -142,31 +140,47 @@ module.exports = class ShwarmaOrder extends Order{
              aReturn.push(`${askSize}`);
               break;
           case OrderState.SIZE:
-              this.stateCur = OrderState.TOPPINGS // 下一个问题
-              if(this.sSize == "" || this.sSize == undefined){
-                  this.sSize = availableSizes(this.sitems)[sInput]; // 存入上一次的回答,计算baseprice
-                  if(this.sSize == undefined){
-                      aReturn.push("You must choose from menu. Press random key to re-input")
-                      this.stateCur = OrderState.ITEMS;
-                      break;
-                     }
-                     this.sprice = basePrice(this.sitems,this.sSize);
-                     console.log(`this.sSize is ${this.sSize}`);
-                 }    
+              // this.stateCur = OrderState.TOPPINGS // 下一个问题
+              // if(this.sSize == "" || this.sSize == undefined){
+              //     this.sSize = availableSizes(this.sitems)[sInput]; // 存入上一次的回答,计算baseprice
+              //     if(this.sSize == undefined){
+              //         aReturn.push("You must choose from menu. Press random key to re-input")
+              //         this.stateCur = OrderState.ITEMS;
+              //         break;
+              //        }
+              //        this.sprice = basePrice(this.sitems,this.sSize);
+              //        console.log(`this.sSize is ${this.sSize}`);
+              //    }    
+
+              // ** test
+              this.sSize = availableSizes(this.sitems)[sInput]; 
+              if(this.sSize == undefined){
+                  aReturn.push("You must choose from menu.")
+                  break;
+                }
+              this.stateCur = OrderState.TOPPINGS;
+              this.sprice = basePrice(this.sitems,this.sSize);
               let asksToppings = foreachArray("toppingpriceDict",this.sitems);
               aReturn.push("What toppings would you like?");
               aReturn.push(`${asksToppings}`);
               break;
           case OrderState.TOPPINGS:
+              // this.stateCur = OrderState.IfOtherItems
+              // if(this.sToppings == "" || this.sToppings == undefined){
+              //     this.sToppings = availableToppings(this.sitems)[sInput];
+              //     if(this.sToppings == undefined){
+              //         aReturn.push("You must choose from menu. Press random key to re-input")
+              //         this.stateCur = OrderState.SIZE;
+              //         break;
+              //        }
+              //    }
+              // ** test
+              this.sToppings = availableToppings(this.sitems)[sInput];
+              if(this.sToppings == undefined){
+                aReturn.push("You must choose from menu.")
+                break;
+               }
               this.stateCur = OrderState.IfOtherItems
-              if(this.sToppings == "" || this.sToppings == undefined){
-                  this.sToppings = availableToppings(this.sitems)[sInput];
-                  if(this.sToppings == undefined){
-                      aReturn.push("You must choose from menu. Press random key to re-input")
-                      this.stateCur = OrderState.SIZE;
-                      break;
-                     }
-                 }
                  // save the order-item1
               this.sprice += toppingpriceDict(this.sitems)[this.sToppings]
               var order = new Order_2(this.sitems,this.sSize,this.sToppings,this.sprice,basePriceDict(this.sitems)[this.sSize],toppingpriceDict(this.sitems)[this.sToppings]);
@@ -205,13 +219,19 @@ module.exports = class ShwarmaOrder extends Order{
                   aReturn.push(`${asksDrinks}`)
               break;            
           case OrderState.DRINKS:
-              if(this.sDrinks == "" || this.sDrinks == undefined){
-                  this.sDrinks = upsell[sInput]; 
-                  if(this.sDrinks == undefined){
-                      aReturn.push("You must choose from menu. Press random key to re-input")
-                      this.stateCur = OrderState.AskUpsell;
-                      break;
-                     }
+              // if(this.sDrinks == "" || this.sDrinks == undefined){
+              //     this.sDrinks = upsell[sInput]; 
+              //     if(this.sDrinks == undefined){
+              //         aReturn.push("You must choose from menu. Press random key to re-input")
+              //         this.stateCur = OrderState.AskUpsell;
+              //         break;
+              //        }
+                // ** test
+                 this.sDrinks = upsell[sInput]; 
+                 if(this.sDrinks == undefined){
+                  aReturn.push("You must choose from menu.")
+                  break;
+                 }
                   this.isDone(true);   
                  // console.log(`***sitem:${this.sitems};stoppings:${this.sToppings};Drinks:${this.sDrinks}`)
                  // this.sprice += addPrice(this.sitems,this.sToppings,this.sDrinks)
@@ -227,7 +247,6 @@ module.exports = class ShwarmaOrder extends Order{
                   aReturn.push(`Please pay for your order here`);
                   aReturn.push(`${this.sUrl}/payment/${this.sNumber}/`);
                   break;
-                 }
           case OrderState.PAYMENT:
                  // console.log(sInput);
                  try {
@@ -244,7 +263,6 @@ module.exports = class ShwarmaOrder extends Order{
                     aReturn.push(`${this.sUrl}/payment/${this.sNumber}/`);
                  }
                  break;
-                 
       }
       return aReturn;
   }
