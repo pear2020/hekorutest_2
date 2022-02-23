@@ -232,7 +232,7 @@ module.exports = class ShwarmaOrder extends Order{
                   aReturn.push("You must choose from menu.")
                   break;
                  }
-                  this.isDone(true);   
+                  //this.isDone(true);   
                  // console.log(`***sitem:${this.sitems};stoppings:${this.sToppings};Drinks:${this.sDrinks}`)
                  // this.sprice += addPrice(this.sitems,this.sToppings,this.sDrinks)
                   this.sprice = addTotalPrice(this.sDrinks)
@@ -246,6 +246,7 @@ module.exports = class ShwarmaOrder extends Order{
                   aReturn.push(` Total Price is $${this.sprice} `)
                   aReturn.push(`Please pay for your order here`);
                   aReturn.push(`${this.sUrl}/payment/${this.sNumber}/`);
+                  this.stateCur = OrderState.PAYMENT;
                   break;
           case OrderState.PAYMENT:
                  // console.log(sInput);
@@ -274,8 +275,8 @@ module.exports = class ShwarmaOrder extends Order{
       if(sAmount != "-1"){
         this.nOrder = sAmount;
       }
-      const sClientID = process.env.SB_CLIENT_ID
-    //  const sClientID = "AeCo-IWepmHt0a0yVInfViksALhq0wpo-rLtTc5jgyd5vTr_DDk311hOgyDEj-tWN-lm2rWMvLV8KiJg" || 'put your client id here for testing ... Make sure that you delete it before committing'
+      //const sClientID = process.env.SB_CLIENT_ID
+      const sClientID = "AeCo-IWepmHt0a0yVInfViksALhq0wpo-rLtTc5jgyd5vTr_DDk311hOgyDEj-tWN-lm2rWMvLV8KiJg" || 'put your client id here for testing ... Make sure that you delete it before committing'
       return(`
       <!DOCTYPE html>
   
